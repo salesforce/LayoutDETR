@@ -9,11 +9,18 @@ arXiv 2023
 ## Abstract
 Graphic layout designs play an essential role in visual communication. Yet handcrafting layout designs is skill-demanding, time-consuming, and non-scalable to batch production. Generative models emerge to make design automation scalable but it remains non-trivial to produce designs that comply with designers' multimodal desires, i.e., constrained by background images and driven by foreground content. We propose *LayoutDETR* that inherits the high quality and realism from generative modeling, while reformulating content-aware requirements as a detection problem: we learn to detect in a background image the reasonable locations, scales, and spatial relations for multimodal foreground elements in a layout. Our solution sets a new state-of-the-art performance for layout generation on public benchmarks and on our newly-curated ad banner dataset. We integrate our solution into a graphical system that facilitates user studies, and show that users prefer our designs over baselines by significant margins.
 
+## Prerequisites
+- Linux
+- NVIDIA GPU + CUDA 11.4
+- Python 3.8.10
+- To install the other Python dependencies, run `pip3 install -r requirements.txt`.
+- Download [Up-DETR pretrained weights](https://drive.google.com/file/d/1JhL1uwNJCaxMrIUx7UzQ3CMCHqmZpCnn/view?usp=sharing) to `pretrained/`.
+
 ### Data preprocessing
 ```
 python dataset_tool.py \
---source=data/dataset/ads_banner_collection_manual_3x_mask/raw/manual_json_png_gt_label \
---dest=data/dataset/ads_banner_collection_manual_3x_mask/zip
+--source=/export/home/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/AMT_uploaded_ads_banners_plus_final_3x_mask/raw/manual_json_png_gt_label \
+--dest=/export/home/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/temp/zip
 ```
 where
 - `--source` indicates the source data path, which contains two subdirectories. The `manual_json_png_gt_label` subdirectory contains a set of `*.png` files representing well-designed images with foreground elements superimposed on the background. It also correspondingly contains a set of `*.json` files with the same file names as of `*.png`, representing the layout ground truth of foreground elements of each well-designed image. Each `*.json` file contains a set of bounding box annotations in the form of `[cy, cx, height, width]`, their label annotations, and their text contents if any. The `manual_LaMa_3x_stringOnly_inpainted_background_images` subdirectory correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images. The subregions that were superimposed by foreground elements have been inpainted by the [LaMa technique](https://github.com/saic-mdal/lama).
@@ -21,7 +28,7 @@ where
 
 ### Launch training
 ```
-python train.py --gpus=8 --batch=8 --workers=8 --tick=1 --snap=20 \
+python train.py --gpus=8 --batch=16 --workers=8 --tick=1 --snap=100 \
 --cfg=layoutganpp --aug=noaug \
 --gamma=0.0 --pl-weight=0.0 \
 --bbox-cls-weight=50.0 --bbox-rec-weight=500.0 --text-rec-weight=0.1 --text-len-rec-weight=2.0 --im-rec-weight=0.5 \
@@ -30,8 +37,8 @@ python train.py --gpus=8 --batch=8 --workers=8 --tick=1 --snap=20 \
 --bert-f-dim=768 --bert-num-heads=4 --bert-num-encoder-layers=12 --bert-num-decoder-layers=2 \
 --background-size=256 --im-f-dim=512 \
 --metrics=layout_fid50k_train,layout_fid50k_val,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_train,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_val,fid50k_train,fid50k_val \
---data=data/dataset/ads_banner_collection_manual_3x_mask/zip/train.zip \
---outdir=training-runs/layoutganpp/ads_banner_collection_manual_3x_mask_50cls_2len_5z
+--data=/export/home/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/AMT_uploaded_ads_banners_plus_final_3x_mask/zip/train.zip \
+--outdir=/export/home/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/temp
 ```
 where
 - `--data` indicates the preprocessed training data path.
