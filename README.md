@@ -17,13 +17,12 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 - To install the other Python dependencies, run `pip3 install -r requirements.txt`.
 - Download [Up-DETR pretrained weights](https://drive.google.com/file/d/1JhL1uwNJCaxMrIUx7UzQ3CMCHqmZpCnn/view?usp=sharing) to `pretrained/`.
 - To build Chrome-based text rendering environment, run
-```
-apt-get update
-unzip chromedriver_linux64.zip
-mv chromedriver /usr/bin/chromedriver
-ln -fs /usr/share/zoneinfo/America/Los_Angelos /etc/localtime
-DEBIAN_FRONTEND=noninteractive apt --assume-yes install ./google-chrome-stable_current_amd64.deb
-```
+	```
+	apt-get update
+	mv chromedriver /usr/bin/chromedriver
+	ln -fs /usr/share/zoneinfo/America/Los_Angelos /etc/localtime
+	DEBIAN_FRONTEND=noninteractive apt --assume-yes install ./google-chrome-stable_current_amd64.deb
+	```
 
 ### Data preprocessing
 ```
@@ -63,7 +62,7 @@ python generate.py --seeds=0-2 \
 --bg-preprocessing=256 \
 --strings='EVERYTHING 10% OFF|Friends & Family Savings Event|SHOP NOW|CODE FRIEND10' \
 --string-labels='header|body text|button|disclaimer / footnote' \
---outfile=temp \
+--outfile=temp/temp \
 --out-postprocessing=horizontal_center_aligned
 ```
 where
