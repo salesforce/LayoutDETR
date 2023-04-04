@@ -13,8 +13,8 @@ from util import save_real_image_with_background
 
 import json
 import copy
-from gen_single_sample import horizontal_center_aligned, de_overlap
-from gen_single_sample_server import visualize_banner
+from generate import horizontal_center_aligned, de_overlap
+from generate_util import visualize_banner
 from selenium import webdriver
 from selenium.webdriver import Chrome
 import random

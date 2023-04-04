@@ -20,8 +20,8 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 ### Data preprocessing
 ```
 python dataset_tool.py \
---source=/export/home/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/AMT_uploaded_ads_banners_plus_final_3x_mask/raw/manual_json_png_gt_label \
---dest=/export/home/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/temp/zip
+--source=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/AMT_uploaded_ads_banners_plus_final_3x_mask/raw/manual_json_png_gt_label \
+--dest=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/temp/zip
 ```
 where
 - `--source` indicates the source data path, which contains two subdirectories. The `manual_json_png_gt_label` subdirectory contains a set of `*.png` files representing well-designed images with foreground elements superimposed on the background. It also correspondingly contains a set of `*.json` files with the same file names as of `*.png`, representing the layout ground truth of foreground elements of each well-designed image. Each `*.json` file contains a set of bounding box annotations in the form of `[cy, cx, height, width]`, their label annotations, and their text contents if any. The `manual_LaMa_3x_stringOnly_inpainted_background_images` subdirectory correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images. The subregions that were superimposed by foreground elements have been inpainted by the [LaMa technique](https://github.com/saic-mdal/lama).
@@ -38,8 +38,8 @@ python train.py --gpus=8 --batch=16 --workers=8 --tick=1 --snap=100 \
 --bert-f-dim=768 --bert-num-heads=4 --bert-num-encoder-layers=12 --bert-num-decoder-layers=2 \
 --background-size=256 --im-f-dim=512 \
 --metrics=layout_fid50k_train,layout_fid50k_val,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_train,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_val,fid50k_train,fid50k_val \
---data=/export/home/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/AMT_uploaded_ads_banners_plus_final_3x_mask/zip/train.zip \
---outdir=/export/home/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/temp
+--data=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/AMT_uploaded_ads_banners_plus_final_3x_mask/zip/train.zip \
+--outdir=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/temp
 ```
 where
 - `--data` indicates the preprocessed training data path.
@@ -47,15 +47,16 @@ where
 - `--metrics` indicates the evaluation metrics measured for each model checkpoint during training, which can include image FID, layout FID, overlap penalty, misalignment penalty, layout-wise IoU, and layout-wise DocSim, etc. See more metric options in `metrics/`.
 - See the definitions and default settings of the other arguments in `train.py`.
 
-### Predict Bounding Boxes
+### Predict layout of bounding boxes
 ```
-python gen_single_sample_API.py \
---seeds=0-4 \
---network=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_fixedTextEncoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/ads_banner_collection_manual_3x_mask/00001-layoutganpp-ads_banner_collection_manual_3x_mask-gpus8-batch8-pl0.000-gamma0.000-overlapping7-alignment17/network-snapshot-008800.pkl \
---bg=/export/share/zeyuan/dataset/content_generation/samples/lumber_Liquidators_living_room.jpg \
+python generate.py --seeds=0-2 \
+--network=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/AMT_uploaded_ads_banners_plus_final_3x_mask/00001-layoutganpp-AMT_uploaded_ads_banners_plus_final_3x_mask-gpus8-batch16-pl0.000-gamma0.000-overlapping7-alignment17/network-snapshot-009072.pkl \
+--bg='/export/share/ning/projects/datasets/from_Abigail/Lumber 1 [header]EVERYTHING 10% OFF[body text]Friends & Family Savings Event[button]SHOP NOW[disclaimer]CODE FRIEND10.jpg' \
 --bg-preprocessing=256 \
---strings='10% OFF Cork Flooring|Code: EXTRA10|SHOP NOW|Excludes limited time deals and clearance' --string-labels='header|body text|button|disclaimer / footnote' \
---outdir=API_generated_single_samples/test --out-jittering-strength=0.2 --out-postprocessing=horizontal_center_aligned
+--strings='EVERYTHING 10% OFF|Friends & Family Savings Event|SHOP NOW|CODE FRIEND10' \
+--string-labels='header|body text|button|disclaimer / footnote' \
+--outfile='temp' \
+--out-postprocessing=horizontal_center_aligned
 ```
 where
 - `--seeds=XX-YY` indicates using different random seeds from range(XX, YY) to generate layouts.
