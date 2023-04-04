@@ -74,4 +74,18 @@ where
 - `--string-labels` indicates the ads text string labels, selected from {`header`, `pre-header`, `post-header`, `body text`, `disclaimer / footnote`, `button`, `callout`, `logo`}. Multiple (<10) strings are separated by `|`.
 - `--outfile` indicates the output file path and name (without extension).
 - `--out-postprocessing` indicates the postprocessing operation to the output bbox parameters so as to guarantee alignment and remove overlapping. The operation can be selected from {`none`, `horizontal_center_aligned`, `horizontal_left_aligned`}. The default is `none`, meaning no postprocessing.
-- The values of generated bbox parameters [cy, cx, h, w] can be read from the variable `bbox_fake` (in the shape of BxNx4, B=1, N=#strings in one ads) in `gen_single_sample_API.py`.
+- The values of generated bbox parameters [cy, cx, h, w] can be read from the variable `bbox_fake` (in the shape of BxNx4, B=1, N=#strings in one ads) in `generate.py`.
+
+## Citation
+  ```
+  @article{yu2023layoutdetr,
+  	title={LayoutDETR: Detection Transformer Is a Good Multimodal Layout Designer},
+  	author={Yu, Ning and Chen, Chia-Chih and Chen, Zeyuan and Meng, Rui and Wu, Gang and Josel, Paul and Niebles, Juan Carlos and Xiong, Caiming and Xu, Ran},
+  	journal={arXiv preprint arXiv:2212.09877},
+  	year={2023}
+	}
+  ```
+
+## Acknowledgement
+- We thank Abigail Kutruff, [Brian Brechbuhl(https://www.linkedin.com/in/brianbrechbuhl), [Elham Etemad](https://ca.linkedin.com/in/elhametemad), and [Amrutha Krishnan](https://www.linkedin.com/in/amruthakrishnan) from Salesforce for constructive advice.
+- We express gratitudes to the [StyleGAN3 repository](https://github.com/NVlabs/stylegan2), [LayoutGAN++ repository](https://github.com/ktrk115/const_layout), [DETR repository](https://github.com/facebookresearch/detr), [Up-DETR repository](https://github.com/dddzg/up-detr), and [BLIP repository](https://github.com/salesforce/BLIP), as our code was directly modified from theirs.
