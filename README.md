@@ -7,7 +7,7 @@ arXiv 2023
 ### [paper](https://arxiv.org/pdf/2212.09877.pdf) | [project page]() | [video]()
 
 <pre><img src='fig/teaser.png' width=200>	<img src='fig/framework_architecture.png' width=400></pre>
-<img src='fig/samples_ads_cgl.jpg' width=600></pre>
+<img src='fig/samples_ads_cgl.jpg' width=700></pre>
 
 ## Abstract
 Graphic layout designs play an essential role in visual communication. Yet handcrafting layout designs is skill-demanding, time-consuming, and non-scalable to batch production. Generative models emerge to make design automation scalable but it remains non-trivial to produce designs that comply with designers' multimodal desires, i.e., constrained by background images and driven by foreground content. We propose *LayoutDETR* that inherits the high quality and realism from generative modeling, while reformulating content-aware requirements as a detection problem: we learn to detect in a background image the reasonable locations, scales, and spatial relations for multimodal foreground elements in a layout. Our solution sets a new state-of-the-art performance for layout generation on public benchmarks and on our newly-curated ad banner dataset. We integrate our solution into a graphical system that facilitates user studies, and show that users prefer our designs over baselines by significant margins.
@@ -67,7 +67,7 @@ where
 
 ### Evaluation
 
-### Bounding box layout generation
+### Layout generation
 ```
 python generate.py --seeds=0-2 \
 --network=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/ads_banner_collection_manual_3x_mask_50cls_2len_5z/00001-layoutganpp-ads_banner_collection_manual_3x_mask-gpus8-batch8-pl0.000-gamma0.000-overlapping7-alignment17/network-snapshot-007800.pkl \
