@@ -13,6 +13,7 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 - Linux
 - NVIDIA GPU + CUDA 11.4
 - Python 3.8.10
+- To install PyTorch and related dependencies, run `pip3 install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio===0.12.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html`.
 - To install the other Python dependencies, run `pip3 install -r requirements.txt`.
 - Download [Up-DETR pretrained weights](https://drive.google.com/file/d/1JhL1uwNJCaxMrIUx7UzQ3CMCHqmZpCnn/view?usp=sharing) to `pretrained/`.
 
