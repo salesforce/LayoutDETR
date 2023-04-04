@@ -27,7 +27,7 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 ### Data preprocessing
 ```
 python dataset_tool.py \
---source=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/AMT_uploaded_ads_banners_plus_final_3x_mask/raw/manual_json_png_gt_label \
+--source=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/ads_banner_collection_manual_3x_mask/raw/manual_json_png_gt_label \
 --dest=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/temp/zip
 ```
 where
@@ -45,7 +45,7 @@ python train.py --gpus=8 --batch=16 --workers=8 --tick=1 --snap=100 \
 --bert-f-dim=768 --bert-num-heads=4 --bert-num-encoder-layers=12 --bert-num-decoder-layers=2 \
 --background-size=256 --im-f-dim=512 \
 --metrics=layout_fid50k_train,layout_fid50k_val,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_train,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_val,fid50k_train,fid50k_val \
---data=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/AMT_uploaded_ads_banners_plus_final_3x_mask/zip/train.zip \
+--data=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/ads_banner_collection_manual_3x_mask/zip/train.zip \
 --outdir=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/temp
 ```
 where
@@ -57,7 +57,7 @@ where
 ### Predict layout of bounding boxes
 ```
 python generate.py --seeds=0-2 \
---network=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/AMT_uploaded_ads_banners_plus_final_3x_mask/00001-layoutganpp-AMT_uploaded_ads_banners_plus_final_3x_mask-gpus8-batch16-pl0.000-gamma0.000-overlapping7-alignment17/network-snapshot-009072.pkl \
+--network=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/ads_banner_collection_manual_3x_mask_50cls_2len_5z/00001-layoutganpp-ads_banner_collection_manual_3x_mask-gpus8-batch8-pl0.000-gamma0.000-overlapping7-alignment17/network-snapshot-007800.pkl \
 --bg='/export/share/ning/projects/datasets/from_Abigail/Lumber 1 [header]EVERYTHING 10% OFF[body text]Friends & Family Savings Event[button]SHOP NOW[disclaimer]CODE FRIEND10.jpg' \
 --bg-preprocessing=256 \
 --strings='EVERYTHING 10% OFF|Friends & Family Savings Event|SHOP NOW|CODE FRIEND10' \
