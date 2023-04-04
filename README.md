@@ -4,6 +4,8 @@
 [Ning Yu](https://ningyu1991.github.io/), [Chia-Chih Chen](https://scholar.google.com/citations?user=0Hr1SOUAAAAJ&hl=en), [Zeyuan Chen](https://www.linkedin.com/in/zeyuan-chen-0253b6141/), [Rui Meng](http://memray.me/), [Gang Wu](https://www.linkedin.com/in/whoisgang/), [Paul Josel](https://www.linkedin.com/in/paul-josel/), [Juan Carlos Niebles](http://www.niebles.net/), [Caiming Xiong](http://cmxiong.com/), [Ran Xu](https://www.linkedin.com/in/ran-x-a2765924/)<br>
 arXiv 2023
 
+### [paper](https://arxiv.org/pdf/2212.09877.pdf) | [project page]() | [video]()
+
 <pre><img src='fig/teaser.png' width=200>	<img src='fig/framework_architecture.png' width=400></pre>
 <img src='fig/samples_ads_cgl.jpg' width=600></pre>
 
