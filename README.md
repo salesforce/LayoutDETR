@@ -16,6 +16,14 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 - To install PyTorch and related dependencies, run `pip3 install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio===0.12.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html`.
 - To install the other Python dependencies, run `pip3 install -r requirements.txt`.
 - Download [Up-DETR pretrained weights](https://drive.google.com/file/d/1JhL1uwNJCaxMrIUx7UzQ3CMCHqmZpCnn/view?usp=sharing) to `pretrained/`.
+- To build Chrome-based text rendering environment, run
+```
+apt-get update
+unzip chromedriver_linux64.zip
+mv chromedriver /usr/bin/chromedriver
+ln -fs /usr/share/zoneinfo/America/Los_Angelos /etc/localtime
+DEBIAN_FRONTEND=noninteractive apt --assume-yes install ./google-chrome-stable_current_amd64.deb
+```
 
 ### Data preprocessing
 ```
@@ -55,17 +63,16 @@ python generate.py --seeds=0-2 \
 --bg-preprocessing=256 \
 --strings='EVERYTHING 10% OFF|Friends & Family Savings Event|SHOP NOW|CODE FRIEND10' \
 --string-labels='header|body text|button|disclaimer / footnote' \
---outfile='temp' \
+--outfile=temp \
 --out-postprocessing=horizontal_center_aligned
 ```
 where
 - `--seeds=XX-YY` indicates using different random seeds from range(XX, YY) to generate layouts.
 - `--network` indicates the path of the well-trained generator .pkl file.
-- `--bg` indicates the path of the provided background image .png file.
+- `--bg` indicates the path of the provided background image file.
 - `--bg-preprocessing` indicates the preprocessing operation to the background image. The default is `none`, meaning no preprocessing.
 - `--strings` indicates the ads text strings, the bboxes of which will be generated on top of the background image. Multiple (<10) strings are separated by `|`.
 - `--string-labels` indicates the ads text string labels, selected from {`header`, `pre-header`, `post-header`, `body text`, `disclaimer / footnote`, `button`, `callout`, `logo`}. Multiple (<10) strings are separated by `|`.
-- `--outdir` indicates the output directory, where there are two subdirectories containing N generated layouts of bboxes on top of the background image. N equals to the number of random seeds. Each subdirectory sorts the generated layouts by either the overlapping penalty (the smaller the less overlapping artifacts) or the alignment penalty (the smaller the stronger left/right/top/bottom/center alignment).
-- `--out-jittering-strength` indicates the strength of randomly jitterring, in the range of 0.0-1.0 (0-100%), to the output bbox parameters, so as to diversify layout generation. The default is 0.0, meaning no jittering.
+- `--outfile` indicates the output file path and name (without extension).
 - `--out-postprocessing` indicates the postprocessing operation to the output bbox parameters so as to guarantee alignment and remove overlapping. The operation can be selected from {`none`, `horizontal_center_aligned`, `horizontal_left_aligned`}. The default is `none`, meaning no postprocessing.
 - The values of generated bbox parameters [cy, cx, h, w] can be read from the variable `bbox_fake` (in the shape of BxNx4, B=1, N=#strings in one ads) in `gen_single_sample_API.py`.
