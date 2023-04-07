@@ -84,17 +84,16 @@ where
 
 ### Layout generation in the wild
 ```
-python generate.py --seeds=0-2 \
+python generate.py \
 --network=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/ads_banner_collection_manual_3x_mask_50cls_2len_5z/00001-layoutganpp-ads_banner_collection_manual_3x_mask-gpus8-batch8-pl0.000-gamma0.000-overlapping7-alignment17/network-snapshot-007800.pkl \
---bg='/export/share/ning/projects/datasets/from_Abigail/Lumber 1 [header]EVERYTHING 10% OFF[body text]Friends & Family Savings Event[button]SHOP NOW[disclaimer]CODE FRIEND10.jpg' \
+--bg='examples/Lumber 2 [header]EVERYTHING 10% OFF[body text]Friends & Family Savings Event[button]SHOP NOW[disclaimer]CODE FRIEND10.jpg' \
 --bg-preprocessing=256 \
 --strings='EVERYTHING 10% OFF|Friends & Family Savings Event|SHOP NOW|CODE FRIEND10' \
 --string-labels='header|body text|button|disclaimer / footnote' \
---outfile=temp/temp \
+--outfile='examples/output/Lumber 2' \
 --out-postprocessing=horizontal_center_aligned
 ```
 where
-- `--seeds=XX-YY` indicates using different random seeds from range(XX, YY) to generate layouts.
 - `--network` indicates the well-trained generator .pkl file path.
 - `--bg` indicates the provided background image file path.
 - `--bg-preprocessing` indicates the preprocessing operation to the background image. The default is `none`, meaning no preprocessing.

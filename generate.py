@@ -206,7 +206,6 @@ font_type = ['Helvetica', 'Verdana', 'Times New Roman', 'Georgia', 'Aria', 'Aria
 @click.option('--bg-preprocessing', 'bg_preprocessing', help='Postprocess the background image', type=click.Choice(['256', '128', 'blur', 'jpeg', 'rec', '3x_mask', 'edge', 'none']), default='none', show_default=True)
 @click.option('--strings', type=str, help="Strings to be printed on the banner. Multiple strings are separated by '|'", required=True)
 @click.option('--string-labels', 'string_labels', type=str, help="String labels. Multiple labels are separated by '|'", required=True)
-@click.option('--seeds', type=parse_range, help='List of random seeds (e.g., \'0,1,4-6\')', required=True)
 @click.option('--outfile', help='Where to save the output images', type=str, required=True, metavar='DIR')
 @click.option('--out-jittering-strength', 'out_jittering_strength', help='Randomly jitter the output bounding box parameters with a certain strength', type=click.FloatRange(min=0.0, max=1.0), default=0.0, show_default=True)
 @click.option('--out-postprocessing', 'out_postprocessing', help='Postprocess the output layout', type=click.Choice(['horizontal_center_aligned', 'horizontal_left_aligned', 'none']), default='none', show_default=True)
@@ -216,7 +215,6 @@ def generate_images(
     bg_preprocessing: str,
     strings: str,
     string_labels: str,
-    seeds: List[int],
     outfile: str,
     out_jittering_strength: float,
     out_postprocessing: str,
@@ -290,86 +288,64 @@ def generate_images(
     bbox_label = [label2index[label] for label in bbox_label]
 
     print('Loading layout bboxes')
-    bbox_fake_list = []
-    mask_list = []
-    bbox_class_list = []
-    bbox_text_list = []
-    overlap = []
-    alignment = []
-    # list of is_center flag used in renderer, bbox alignment needs to match text alignment
-    bbox_alignment_list = []
     mask = torch.from_numpy(np.array([1] * len(bbox_text) + [0] * (9-len(bbox_text)))).to(device).to(torch.bool).unsqueeze(0)
     bbox_patch_dummy = torch.zeros((1, 9, 3, 256, 256)).to(device).to(torch.float32)
-    for seed in seeds:
-        z = torch.from_numpy(np.random.RandomState(seed).randn(1, 9, G.z_dim)).to(device).to(torch.float32)
-        order = list(range(len(bbox_text)))
-        # np.random.RandomState(seed).shuffle(order)
-        bbox_text_temp = [bbox_text[i] for i in order]
-        bbox_text_temp += [''] * (9-len(bbox_text))
-        bbox_text_temp = [bbox_text_temp]
-        bbox_label_temp = [bbox_label[i] for i in order]
-        bbox_class_temp = torch.from_numpy(np.array(bbox_label_temp + [0] * (9-len(bbox_label_temp)))).to(device).to(torch.int64).unsqueeze(0)
-        bbox_fake = G(z=z, bbox_class=bbox_class_temp, bbox_real=None, bbox_text=bbox_text_temp, bbox_patch=bbox_patch_dummy, padding_mask=~mask, background=background, c=None)
-        if out_jittering_strength > 0.0:
-            bbox_fake = jitter(bbox_fake, out_jittering_strength, seed)
 
-        # if out_postprocessing not decided, i.e. random mode, randomly choose among
-        # ['horizontal_center_aligned', 'horizontal_left_aligned', 'none']
-        if out_postprocessing == 'none':
-            rand_val = random.random()
-            if 0 <= rand_val < 0.34:
-                out_postprocessing == 'horizontal_center_aligned'
-            elif 0.34 <= rand_val < 0.67:
-                out_postprocessing == 'horizontal_left_aligned'
-        if out_postprocessing == 'horizontal_center_aligned':
-            bbox_fake = horizontal_center_aligned(bbox_fake, mask)
-            bbox_fake = de_overlap(bbox_fake, mask)
-            bbox_alignment_list.append(True)
-        elif out_postprocessing == 'horizontal_left_aligned':
-            bbox_fake = horizontal_left_aligned(bbox_fake, mask)
-            bbox_fake = de_overlap(bbox_fake, mask)
-            bbox_alignment_list.append(False)
-        else:
-            bbox_alignment_list.append(True)  # still center align text strings
-        bbox_fake_list.append(bbox_fake[0])
-        mask_list.append(mask[0])
-        bbox_class_list.append(bbox_class_temp[0])
-        bbox_text_list.append(bbox_text_temp[0])
-        overlap.append(compute_overlap(bbox_fake, mask).cpu().numpy()[0])
-        alignment.append(compute_alignment(bbox_fake, mask).cpu().numpy()[0])
+    z = torch.from_numpy(np.random.RandomState(0).randn(1, 9, G.z_dim)).to(device).to(torch.float32)
+    bbox_text_temp = list(bbox_text)
+    bbox_text_temp += [''] * (9-len(bbox_text))
+    bbox_text_temp = [bbox_text_temp]
+    bbox_label_temp = list(bbox_label)
+    bbox_class_temp = torch.from_numpy(np.array(bbox_label_temp + [0] * (9-len(bbox_label_temp)))).to(device).to(torch.int64).unsqueeze(0)
+    bbox_fake = G(z=z, bbox_class=bbox_class_temp, bbox_real=None, bbox_text=bbox_text_temp, bbox_patch=bbox_patch_dummy, padding_mask=~mask, background=background, c=None)
+    if out_jittering_strength > 0.0:
+        bbox_fake = jitter(bbox_fake, out_jittering_strength, seed=0)
+
+    # if out_postprocessing not decided, i.e. random mode, randomly choose among
+    # ['horizontal_center_aligned', 'horizontal_left_aligned', 'none']
+    if out_postprocessing == 'none':
+        rand_val = random.random()
+        if 0 <= rand_val < 0.34:
+            out_postprocessing == 'horizontal_center_aligned'
+        elif 0.34 <= rand_val < 0.67:
+            out_postprocessing == 'horizontal_left_aligned'
+    if out_postprocessing == 'horizontal_center_aligned':
+        bbox_fake = horizontal_center_aligned(bbox_fake, mask)
+        bbox_fake = de_overlap(bbox_fake, mask)
+        bbox_alignment = True
+    elif out_postprocessing == 'horizontal_left_aligned':
+        bbox_fake = horizontal_left_aligned(bbox_fake, mask)
+        bbox_fake = de_overlap(bbox_fake, mask)
+        bbox_alignment = False
+    else:
+        bbox_alignment = True # still center align text strings
 
     outfile = os.path.join(os.getcwd(), outfile)
     outdir = os.path.dirname(outfile)
     os.makedirs(outdir, exist_ok=True)
-    order = np.argsort(np.array(overlap))
 
-    banner_specs['numResults'] = len(seeds)
-    for j, idx in enumerate(order):
-        ###################################
-        # config json format banner specs
-        ###################################
-        mask = mask_list[idx].detach().cpu().numpy()
-        bbox_class = bbox_class_list[idx].detach().cpu().numpy()
-        text = bbox_text_list[idx]
-        banner_specs['contentStyle']['elements'] = []
-        for i, m in enumerate(mask):
-            if m:
-                banner_specs['contentStyle']['elements'].append(element_specs[bbox_class[i]])
-        #this_font = random.choice(font_type)  # random font type
-        this_font = 'Arial'
-        #this_radius = random.random() * 1.5  # random button radius
-        this_radius = 0.5
-        #generated_path = os.path.join(outdir, f'{str(uuid.uuid4())}')  # random file name in uuid format
-        for i, e in enumerate(banner_specs['contentStyle']['elements']):
-            e['text'] = text[i]
-            e['style']['fontFamily'] = this_font
-            if e['type'] == 'button':
-                e['buttonParams']['radius'] = this_radius
+    banner_specs['numResults'] = 1
+    ###################################
+    # config json format banner specs
+    ###################################
+    bbox_fake = bbox_fake.detach().cpu().numpy().squeeze()
+    mask = mask.detach().cpu().numpy().squeeze()
+    bbox_class = bbox_class_temp.detach().cpu().numpy().squeeze()
+    text = bbox_text_temp[0]
+    banner_specs['contentStyle']['elements'] = []
+    for i, m in enumerate(mask):
+        if m:
+            banner_specs['contentStyle']['elements'].append(element_specs[bbox_class[i]])
+    for i, e in enumerate(banner_specs['contentStyle']['elements']):
+        e['text'] = text[i]
+        e['style']['fontFamily'] = 'Arial'
+        if e['type'] == 'button':
+            e['buttonParams']['radius'] = 0.5
 
-        visualize_banner(bbox_fake_list[idx], mask_list[idx], banner_specs['contentStyle']['elements'],
-                             bbox_alignment_list[idx], background_orig, browser, banner_specs["resultFormat"],
-                             outfile+'_'+str(idx))
-        save_bboxes_with_background(bbox_fake_list[idx], mask_list[idx], bbox_class_list[idx], background_orig, outfile+'_'+str(idx)+'_bboxes.png')
+    visualize_banner(bbox_fake, mask, banner_specs['contentStyle']['elements'],
+                    bbox_alignment, background_orig, browser, banner_specs["resultFormat"],
+                    outfile)
+    save_bboxes_with_background(bbox_fake, mask, bbox_class, background_orig, outfile+'_bboxes.png')
 
 #----------------------------------------------------------------------------
 
