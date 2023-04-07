@@ -30,7 +30,7 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 	```
 
 ### Data preprocessing
-[Our ad banner dataset](https://storage.googleapis.com/sfr-layoutdetr-data-research/data/LayoutDETR_ad_banner_dataset). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with retailer brands as keywords. Download our prepared dataset into `data/ads_banner_collection_manual_3x_mask` which contains two subdirectories:
+[Our ad banner dataset](https://storage.cloud.google.com/sfr-layoutdetr-data-research/data/LayoutDETR_ad_banner_dataset/ads_banner_collection_manual_3x_mask.zip) (9.9GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with retailer brands as keywords. Download our prepared dataset to `data/ads_banner_collection_manual_3x_mask` which contains two subdirectories:
 - `manual_json_png_gt_label` subdirectory contains a set of `*.png` files representing well-designed images with foreground elements superimposed on the background. It also correspondingly contains a set of `*.json` files with the same file names as of `*.png`, representing the layout ground truth of foreground elements of each well-designed image. Each `*.json` file contains a set of bounding box annotations in the form of `[cy, cx, height, width]`, their label annotations, and their text contents if any.
 - `manual_LaMa_3x_stringOnly_inpainted_background_images` subdirectory correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images. The subregions that were superimposed by foreground elements have been inpainted by the [LaMa technique](https://github.com/saic-mdal/lama). There are 2x extra random subregions also inpainted, which aim at avoiding generator being overfitted to inpainted subregions if we inpaint only ground truth layouts. The augmented inpainting subregions serve as false postive which are inpainted but are not ground truth layouts.
 - To preprocess the dataset that are efficient for training, run
@@ -65,7 +65,7 @@ where
 - See the definitions and default settings of the other arguments in `train.py`.
 
 ### Evaluation
-Download the well-trained LayoutDETR model on our ad banner dataset from [here](https://storage.cloud.google.com/sfr-layoutdetr-data-research/models/layoutdetr_ad_banner.pkl)(2.7GB).
+Download the well-trained LayoutDETR model on our ad banner dataset from [here](https://storage.cloud.google.com/sfr-layoutdetr-data-research/models/layoutdetr_ad_banner.pkl) (2.7GB).
 ```
 python evaluate.py --gpus=8 --batch=16 --workers=8 --tick=1 --snap=100 \
 --cfg=layoutganpp --aug=noaug \
