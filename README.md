@@ -5,7 +5,7 @@
 Salesforce Research
 arXiv 2023
 
-### [paper](https://arxiv.org/pdf/2212.09877.pdf) | [project page]() | [demo video]()
+### [paper](https://arxiv.org/pdf/2212.09877.pdf) | [project page]()
 
 <pre><img src='assets/teaser.png' width=200>	<img src='assets/framework_architecture.png' width=400></pre>
 <img src='assets/samples_ads_cgl.jpg' width=700></pre>
