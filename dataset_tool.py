@@ -83,7 +83,7 @@ def lexicographic_sort_idx(bboxes):
 
 #----------------------------------------------------------------------------
 
-def open_ads_banner_collection_manual_gt(source_dir, is_mask_aug, max_samples: Optional[int]):
+def open_ads_banner_collection_manual_gt(source_dir, max_samples: Optional[int]):
     input_samples = sorted(Path(source_dir).glob('*.json'))
 
     #######################################
@@ -220,10 +220,7 @@ def open_ads_banner_collection_manual_gt(source_dir, is_mask_aug, max_samples: O
                 patch_mask[512-h//2:512+h-h//2, 512-w//2:512+w-w//2] = 255
                 patch_masks.append(patch_mask)
             # background image
-            if is_mask_aug:
-                background_orig_path = str(fname).replace('manual_json_png_gt_label', 'manual_LaMa_3x_stringOnly_inpainted_background_images').replace('.json', '_inpainted.png')
-            else:
-                background_orig_path = str(fname).replace('manual_json_png_gt_label', 'manual_LaMa_stringOnly_inpainted_background_images').replace('.json', '_inpainted.png')
+            background_orig_path = str(fname).replace('manual_json_png_gt_label', 'manual_LaMa_3x_stringOnly_inpainted_background_images').replace('.json', '_inpainted.png')
             assert os.path.isfile(background_orig_path)
             background_orig = PIL.Image.open(background_orig_path)
             background_orig = background_orig.resize((1024, 1024), resample=PIL.Image.BILINEAR)
@@ -247,7 +244,7 @@ def open_ads_banner_collection_manual_gt(source_dir, is_mask_aug, max_samples: O
 
 #----------------------------------------------------------------------------
 
-def open_cgl_dataset(source_dir, *, max_samples: Optional[int]):
+def open_cgl_dataset(source_dir, max_samples: Optional[int]):
     input_samples = sorted(Path(source_dir).glob('*.json'))
 
     #######################################
@@ -412,7 +409,7 @@ def open_cgl_dataset(source_dir, *, max_samples: Optional[int]):
 
 #----------------------------------------------------------------------------
 
-def open_clay(source_dir, *, max_samples: Optional[int]):
+def open_clay(source_dir, max_samples: Optional[int]):
     input_samples = sorted(Path(source_dir).glob('*.json'))
 
     #######################################
@@ -619,10 +616,10 @@ def open_clay(source_dir, *, max_samples: Optional[int]):
 
 #----------------------------------------------------------------------------
 
-def open_dataset(source, is_mask_aug, max_samples: Optional[int]):
+def open_dataset(source, max_samples: Optional[int]):
     if 'ads_banner_collection_manual' in source:
         if os.path.isdir(source):
-            return open_ads_banner_collection_manual_gt(source, is_mask_aug=is_mask_aug, max_samples=max_samples)
+            return open_ads_banner_collection_manual_gt(source, max_samples=max_samples)
         error('Missing input directory')
     elif 'cgl_dataset' in source:
         if os.path.isdir(source):
@@ -673,13 +670,11 @@ def open_dest(dest: str) -> Tuple[str, Callable[[str, Union[bytes, str]], None],
 @click.pass_context
 @click.option('--source', help='Directory or archive name for input dataset', required=True, metavar='PATH')
 @click.option('--dest', help='Output directory or archive name for output dataset', required=True, metavar='PATH')
-@click.option('--is-mask-aug', help='Are background images inpainted using augmented masks? (True for training set preprocessing)', required=True, type=bool, metavar='BOOL')
 @click.option('--max-samples', help='Output only up to `max-samples` samples', type=int, default=None)
 def convert_dataset(
     ctx: click.Context,
     source: str,
     dest: str,
-    is_mask_aug: bool,
     max_samples: Optional[int],
 ):
 
@@ -688,8 +683,8 @@ def convert_dataset(
     if dest == '':
         ctx.fail('--dest output filename or directory must not be an empty string')
 
-    num_files, input_iter_1 = open_dataset(source, is_mask_aug=is_mask_aug, max_samples=max_samples)
-    _, input_iter_2 = open_dataset(source, is_mask_aug=is_mask_aug, max_samples=max_samples)
+    num_files, input_iter_1 = open_dataset(source, max_samples=max_samples)
+    _, input_iter_2 = open_dataset(source, max_samples=max_samples)
     archive_root_dir_train, save_bytes_train, close_dest_train = open_dest(os.path.join(dest, 'train.zip'))
     archive_root_dir_val, save_bytes_val, close_dest_val = open_dest(os.path.join(dest, 'val.zip'))
 
