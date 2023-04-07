@@ -30,28 +30,18 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 	```
 
 ### Data preprocessing
-We experiment on three datasets:
-- [Our ad banner dataset](https://storage.googleapis.com/sfr-layoutdetr-data-research/data/LayoutDETR_ad_banner_dataset). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with retailer brands as keywords. Download the dataset into `data/LayoutDETR_ad_banner_dataset` which contains two subdirectories. 
+- [Our ad banner dataset](https://storage.googleapis.com/sfr-layoutdetr-data-research/data/LayoutDETR_ad_banner_dataset). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with retailer brands as keywords. Download our prepared dataset into `data/ads_banner_collection_manual_3x_mask` which contains two subdirectories:
 	- `manual_json_png_gt_label` subdirectory contains a set of `*.png` files representing well-designed images with foreground elements superimposed on the background. It also correspondingly contains a set of `*.json` files with the same file names as of `*.png`, representing the layout ground truth of foreground elements of each well-designed image. Each `*.json` file contains a set of bounding box annotations in the form of `[cy, cx, height, width]`, their label annotations, and their text contents if any.
 	- `manual_LaMa_3x_stringOnly_inpainted_background_images` subdirectory correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images. The subregions that were superimposed by foreground elements have been inpainted by the [LaMa technique](https://github.com/saic-mdal/lama). There are 2x extra random subregions also inpainted, which aim at avoiding generator being overfitted to inpainted subregions if we inpaint only ground truth layouts. The augmented inpainting subregions serve as false postive which are inpainted but are not ground truth layouts.
-	- To preprocess the dataset that are efficient for training, inference, and evaluation, run
+	- To preprocess the dataset that are efficient for training, run
 		```
 		python dataset_tool.py \
 		--source=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/ads_banner_collection_manual_3x_mask/raw/manual_json_png_gt_label \
-		--dest=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/temp/zip_3x_mask \
+		--dest=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/temp/zip_ads_banner_collection_manual_3x_mask
 		```
 		where
 		- `--source` indicates the source data path where you downloaded the raw dataset.
 		- `--dest` indicates the preprocessed data path containing two files: `train.zip` and `val.zip` which are 9:1 splitted from the source data.
-
-- [CGL Chinese ad banner dataset](https://tianchi.aliyun.com/dataset/142692).
-
-- [CLAY mobile application UI dataset](). The source images are originated from [Rico dataset](https://interactionmining.org/rico) and the source annotations (layouts, string contents, string labels, etc.) are originated from [CLAY dataset](https://github.com/google-research-datasets/clay). Download the dataset into `data/CLAY_mobile_application_UI_dataset` which contains two subdirectories and two files.
-	- `combined` subdirectory contains a set of `*.jpg` files representing well-designed images. It also correspondingly contains a set of `*.json` representing the layout ground truth of foreground elements of each well-designed image.
-	- `LaMa_inpainted_background_images` subdirectory correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images.
-	- `clay_labels.csv` contains all the type labels for UI foreground elements.
-	- `label_map.txt` contains mapping from type ID to type string.
-	- To preprocess the dataset, run similar code as above.
 
 ### Training
 ```
@@ -68,16 +58,26 @@ python train.py --gpus=8 --batch=16 --workers=8 --tick=1 --snap=100 \
 --outdir=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/temp
 ```
 where
+- `--batch` indicates the total batch size on all the GPUs.
 - `--data` indicates the preprocessed training data path.
 - `--outdir` indicates the output path of model checkpoints, result snapshots, config record file, log file, etc.
-- `--metrics` indicates the evaluation metrics measured for each model checkpoint during training, which can include image FID, layout FID, overlap penalty, misalignment penalty, layout-wise IoU, and layout-wise DocSim, etc. See more metric options in `metrics/`.
+- `--metrics` indicates the evaluation metrics measured for each model checkpoint during training, which can include layout FID, image FID, overlap penalty, misalignment penalty, layout-wise IoU, and layout-wise DocSim, etc. See more metric options in `metrics/`.
 - See the definitions and default settings of the other arguments in `train.py`.
 
-### Model zoo
-
 ### Evaluation
+```
+python evaluate.py --gpus=8 --batch=16 --workers=8 --tick=1 --snap=100 \
+--cfg=layoutganpp --aug=noaug \
+--z-dim=4 --g-f-dim=256 --g-num-heads=4 --g-num-layers=8 --d-f-dim=256 --d-num-heads=4 --d-num-layers=8 \
+--bert-f-dim=768 --bert-num-heads=4 --bert-num-encoder-layers=12 --bert-num-decoder-layers=2 \
+--background-size=256 --im-f-dim=512 \
+--metrics=layout_fid50k_val,fid50k_val,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_val,rendering_val \
+--data=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/ads_banner_collection_manual/zip/val.zip \
+--outdir=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/temp \
+--resume=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/ads_banner_collection_manual_3x_mask_50cls_2len_5z/00001-layoutganpp-ads_banner_collection_manual_3x_mask-gpus8-batch8-pl0.000-gamma0.000-overlapping7-alignment17/network-snapshot-007800.pkl
+```
 
-### Layout generation
+### Layout generation in the wild
 ```
 python generate.py --seeds=0-2 \
 --network=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/ads_banner_collection_manual_3x_mask_50cls_2len_5z/00001-layoutganpp-ads_banner_collection_manual_3x_mask-gpus8-batch8-pl0.000-gamma0.000-overlapping7-alignment17/network-snapshot-007800.pkl \

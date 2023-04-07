@@ -8,6 +8,7 @@ import re
 import sys
 import tarfile
 import zipfile
+import csv
 from pathlib import Path
 from typing import Callable, Optional, Tuple, Union
 
@@ -283,7 +284,7 @@ def open_cgl_dataset(source_dir, max_samples: Optional[int]):
     H_standard = 750
     def iterate_samples():
         for idx, fname in enumerate(input_samples):
-            page = PIL.Image.open(str(fname).replace('layout_imgs_6w_ocr', 'layout_imgs_6w_png').replace('.json', '.png'))
+            page = PIL.Image.open(str(fname).replace('.json', '.png'))
             W_page = page.size[0]
             H_page = page.size[1]
             if float(W_page) / float(H_page) != float(W_standard) / float(H_standard):
@@ -384,7 +385,7 @@ def open_cgl_dataset(source_dir, max_samples: Optional[int]):
                 patch_mask[hc-h//2:hc+h-h//2, wc-w//2:wc+w-w//2] = 255
                 patch_masks.append(patch_mask)
             # background image
-            background_orig_path = str(fname).replace('layout_imgs_6w_ocr', 'LaMa_3x_stringOnly_inpainted_background_images').replace('.json', '_inpainted.png')
+            background_orig_path = str(fname).replace('layout_imgs_6w_png_ocr', 'LaMa_3x_stringOnly_inpainted_background_images').replace('.json', '_inpainted.png')
             assert os.path.isfile(background_orig_path)
             background_orig = PIL.Image.open(background_orig_path)
             if background_orig.width != W_standard or background_orig.height != H_standard:
@@ -592,7 +593,7 @@ def open_clay(source_dir, max_samples: Optional[int]):
                 patch_mask[hc-h//2:hc+h-h//2, wc-w//2:wc+w-w//2] = 255
                 patch_masks.append(patch_mask)
             # background image
-            background_orig_path = str(fname).replace('combined', 'LaMa_inpainted_background_images').replace('.json', '_inpainted.png')
+            background_orig_path = str(fname).replace('combined', 'LaMa_inpainted_background_images').replace('.json', '_mask001.png')
             assert os.path.isfile(background_orig_path)
             background_orig = PIL.Image.open(background_orig_path)
             background_orig = background_orig.resize((W_page, H_page), resample=PIL.Image.BILINEAR)
