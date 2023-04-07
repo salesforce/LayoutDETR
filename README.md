@@ -4,7 +4,7 @@
 [Ning Yu](https://ningyu1991.github.io/), [Chia-Chih Chen](https://scholar.google.com/citations?user=0Hr1SOUAAAAJ&hl=en), [Zeyuan Chen](https://www.linkedin.com/in/zeyuan-chen-0253b6141/), [Rui Meng](http://memray.me/), [Gang Wu](https://www.linkedin.com/in/whoisgang/), [Paul Josel](https://www.linkedin.com/in/paul-josel/), [Juan Carlos Niebles](http://www.niebles.net/), [Caiming Xiong](http://cmxiong.com/), [Ran Xu](https://www.linkedin.com/in/ran-x-a2765924/)<br>
 arXiv 2023
 
-### [paper](https://arxiv.org/pdf/2212.09877.pdf) | [project page]() | [video]()
+### [paper](https://arxiv.org/pdf/2212.09877.pdf) | [project page]() | [demo video]()
 
 <pre><img src='fig/teaser.png' width=200>	<img src='fig/framework_architecture.png' width=400></pre>
 <img src='fig/samples_ads_cgl.jpg' width=700></pre>
@@ -14,15 +14,17 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 
 ## Prerequisites
 - Linux
-- NVIDIA GPU + CUDA 11.4
-- Python 3.8.10
-- To install PyTorch and related dependencies, run `pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio===0.12.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html`.
-- To install the other Python dependencies, run `pip install -r requirements.txt`.
+- NVIDIA GPU + CUDA 11.3
+- To install conda virtual environment, run
+	```
+	conda env create -f environment.yaml
+	conda activate layoutdetr
+	```
 - Download [Up-DETR pretrained weights](https://drive.google.com/file/d/1JhL1uwNJCaxMrIUx7UzQ3CMCHqmZpCnn/view?usp=sharing) to `pretrained/`.
 - To build Chrome-based text rendering environment, run
 	```
 	apt-get update
-	mv chromedriver /usr/bin/chromedriver
+	cp chromedriver /usr/bin/chromedriver
 	ln -fs /usr/share/zoneinfo/America/Los_Angelos /etc/localtime
 	DEBIAN_FRONTEND=noninteractive apt --assume-yes install ./google-chrome-stable_current_amd64.deb
 	```
@@ -53,7 +55,7 @@ python train.py --gpus=8 --batch=16 --workers=8 --tick=1 --snap=100 \
 --z-dim=4 --g-f-dim=256 --g-num-heads=4 --g-num-layers=8 --d-f-dim=256 --d-num-heads=4 --d-num-layers=8 \
 --bert-f-dim=768 --bert-num-heads=4 --bert-num-encoder-layers=12 --bert-num-decoder-layers=2 \
 --background-size=256 --im-f-dim=512 \
---metrics=layout_fid50k_train,layout_fid50k_val,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_train,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_val,fid50k_train,fid50k_val \
+--metrics=layout_fid50k_train,layout_fid50k_val,fid50k_train,fid50k_val,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_train,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_val \
 --data=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/ads_banner_collection_manual_3x_mask/zip/train.zip \
 --outdir=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/training-runs/layoutganpp/temp
 ```
