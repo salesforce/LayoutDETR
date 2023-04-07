@@ -36,13 +36,13 @@ We experiment on three datasets:
 	- The `manual_LaMa_stringOnly_inpainted_background_images` subdirectory correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images. The subregions that were superimposed by foreground elements have been inpainted by the [LaMa technique](https://github.com/saic-mdal/lama). These images serve for inference inputs.
 	- The `manual_LaMa_3x_stringOnly_inpainted_background_images` subdirectory is similar to the above, containing background-only inpainted images. The only difference is that the inpainted subregions in each image are randomly augmented 2x more. These images serve for training inputs, which avoid layout generator being overfitted to inpainted subregions if we inpaint only ground truth layouts. The augmented inpainting subregions serve as false postive which are inpainted but are not ground truth layouts.
 	- To preprocess the datasets that are efficient for training, inference, and evaluation, run
-	```
-	python dataset_tool.py \
-	--source=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/ads_banner_collection_manual_3x_mask/raw/manual_json_png_gt_label \
-	--dest=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/temp/zip_3x_mask \
-	--is-mask-aug=True
-	```
-	where
+		```
+		python dataset_tool.py \
+		--source=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/ads_banner_collection_manual_3x_mask/raw/manual_json_png_gt_label \
+		--dest=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/temp/zip_3x_mask \
+		--is-mask-aug=True
+		```
+		where
 		- `--source` indicates the source data path where you downloaded the raw dataset.
 		- `--dest` indicates the preprocessed data path containing two files: `train.zip` and `val.zip` which are 9:1 splitted from the source data.
 		- `--is-mask-aug` indicates whether background images are inpainted using augmented masks. True for training data preprocessing. False for inference data preprocessing.
