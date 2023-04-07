@@ -30,7 +30,7 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 	```
 
 ### Data preprocessing
-[Our ad banner dataset](https://storage.cloud.google.com/sfr-layoutdetr-data-research/data/ads_banner_collection_manual_3x_mask.zip) (9.9GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with retailer brands as keywords. Download our prepared dataset to `data/ads_banner_collection_manual_3x_mask` which contains two subdirectories:
+[Our ad banner dataset](https://storage.cloud.google.com/sfr-layoutdetr-data-research/ads_banner_collection_manual_3x_mask.zip) (9.9GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with retailer brands as keywords. Download our prepared dataset to `data/ads_banner_collection_manual_3x_mask` which contains two subdirectories:
 - `manual_json_png_gt_label` subdirectory contains a set of `*.png` files representing well-designed images with foreground elements superimposed on the background. It also correspondingly contains a set of `*.json` files with the same file names as of `*.png`, representing the layout ground truth of foreground elements of each well-designed image. Each `*.json` file contains a set of bounding box annotations in the form of `[cy, cx, height, width]`, their label annotations, and their text contents if any.
 - `manual_LaMa_3x_stringOnly_inpainted_background_images` subdirectory correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images. The subregions that were superimposed by foreground elements have been inpainted by the [LaMa technique](https://github.com/saic-mdal/lama). There are 2x extra random subregions also inpainted, which aim at avoiding generator being overfitted to inpainted subregions if we inpaint only ground truth layouts. The augmented inpainting subregions serve as false postive which are inpainted but are not ground truth layouts.
 - To preprocess the dataset that are efficient for training, run
@@ -40,8 +40,8 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 	--dest=/export/share/ning/projects/webpage_generation/stylegan3_detr_genRec_uncondDis_gIoU_fixedTextEncoder_shallowTextDecoder_unifiedNoise_textNoImageCond_backgroundCond_paddingImageInput_CNN_overlapping_alignment_losses_D_LM_D_visualDecoder/data/dataset/temp/zip_ads_banner_collection_manual_3x_mask
 	```
 	where
-	- `--source` indicates the source data path where you downloaded the raw dataset.
-	- `--dest` indicates the preprocessed data path containing two files: `train.zip` and `val.zip` which are 9:1 splitted from the source data.
+	- `--source` indicates the source data direcotry path where you downloaded the raw dataset.
+	- `--dest` indicates the preprocessed data direcotry path containing two files: `train.zip` and `val.zip` which are 9:1 splitted from the source data.
 
 ### Training
 ```
@@ -59,13 +59,13 @@ python train.py --gpus=8 --batch=16 --workers=8 --tick=1 --snap=100 \
 ```
 where
 - `--batch` indicates the total batch size on all the GPUs.
-- `--data` indicates the preprocessed training data path.
-- `--outdir` indicates the output path of model checkpoints, result snapshots, config record file, log file, etc.
+- `--data` indicates the preprocessed training data .zip file path.
+- `--outdir` indicates the output direcotry path of model checkpoints, result snapshots, config record file, log file, etc.
 - `--metrics` indicates the evaluation metrics measured for each model checkpoint during training, which can include layout FID, image FID, overlap penalty, misalignment penalty, layout-wise IoU, and layout-wise DocSim, etc. See more metric options in `metrics/`.
 - See the definitions and default settings of the other arguments in `train.py`.
 
 ### Evaluation
-Download the well-trained LayoutDETR model on our ad banner dataset from [here](https://storage.cloud.google.com/sfr-layoutdetr-data-research/models/layoutdetr_ad_banner.pkl) (2.7GB).
+Download the well-trained LayoutDETR model on our ad banner dataset from [here](https://storage.cloud.google.com/sfr-layoutdetr-data-research/layoutdetr_ad_banner.pkl) (2.7GB).
 ```
 python evaluate.py --gpus=8 --batch=16 --workers=8 --tick=1 --snap=100 \
 --cfg=layoutganpp --aug=noaug \
@@ -94,8 +94,8 @@ python generate.py --seeds=0-2 \
 ```
 where
 - `--seeds=XX-YY` indicates using different random seeds from range(XX, YY) to generate layouts.
-- `--network` indicates the path of the well-trained generator .pkl file.
-- `--bg` indicates the path of the provided background image file.
+- `--network` indicates the well-trained generator .pkl file path.
+- `--bg` indicates the provided background image file path.
 - `--bg-preprocessing` indicates the preprocessing operation to the background image. The default is `none`, meaning no preprocessing.
 - `--strings` indicates the ads text strings, the bboxes of which will be generated on top of the background image. Multiple (<10) strings are separated by `|`.
 - `--string-labels` indicates the ads text string labels, selected from {`header`, `pre-header`, `post-header`, `body text`, `disclaimer / footnote`, `button`, `callout`, `logo`}. Multiple (<10) strings are separated by `|`.

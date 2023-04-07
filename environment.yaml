@@ -8,7 +8,7 @@ dependencies:
   - cudatoolkit=11.3
   - pytorch=1.12.1
   - torchvision=0.13.1
-  - numpy=1.22.4
+  - numpy=1.19.2
   - pip:
     - torch-geometric==2.0.3
     - torch-utils==0.1.2
