@@ -15,10 +15,10 @@ class Loss:
 #----------------------------------------------------------------------------
 
 class StyleGAN2Loss(Loss):
-    def __init__(self, device, G, D, augment_pipe=None, r1_gamma=10.0, style_mixing_prob=0, pl_weight=2.0, pl_batch_shrink=2, pl_decay=0.01, pl_no_weight_grad=False, blur_init_sigma=0, blur_fade_kimg=0,
-                 Dreal_bbox_cls_weight=1.0, Dreal_bbox_rec_weight=10.0, Dreal_text_rec_weight=0.01, Dreal_text_len_rec_weight=10.0, Dreal_im_rec_weight=1.0,
-                 Ggen_bbox_rec_weight=10.0, Ggen_bbox_gIoU_weight=1.0, Ggen_overlapping_weight=7.0, Ggen_alignment_weight=17.0,
-                 Ggen_z_rec_weight=10.0, Ggen_bbox_cls_weight=1.0, Ggen_text_rec_weight=0.01, Ggen_text_len_rec_weight=10.0):
+    def __init__(self, device, G, D, augment_pipe=None, r1_gamma=0.0, style_mixing_prob=0, pl_weight=0.0, pl_batch_shrink=2, pl_decay=0.01, pl_no_weight_grad=False, blur_init_sigma=0, blur_fade_kimg=0,
+                 Dreal_bbox_cls_weight=50.0, Dreal_bbox_rec_weight=500.0, Dreal_text_rec_weight=0.1, Dreal_text_len_rec_weight=2.0, Dreal_im_rec_weight=0.5,
+                 Ggen_bbox_rec_weight=100.0, Ggen_bbox_gIoU_weight=4.0, Ggen_overlapping_weight=7.0, Ggen_alignment_weight=17.0,
+                 Ggen_z_rec_weight=5.0, Ggen_bbox_cls_weight=50.0, Ggen_text_rec_weight=1.0, Ggen_text_len_rec_weight=1.0):
         super().__init__()
         self.device             = device
         self.G                  = G

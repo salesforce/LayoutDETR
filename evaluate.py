@@ -118,21 +118,20 @@ def parse_comma_separated_list(s):
 
 # Required.
 @click.option('--outdir',       help='Where to save the results', metavar='DIR',                required=True)
-@click.option('--cfg',          help='Base configuration',                                      type=click.Choice(['layoutganpp', 'stylegan3-t', 'stylegan3-r', 'stylegan2']), required=True)
 @click.option('--data',         help='Training data', metavar='[ZIP]',                          type=str, required=True)
 @click.option('--gpus',         help='Number of GPUs to use', metavar='INT',                    type=click.IntRange(min=1), required=True)
 @click.option('--batch',        help='Total batch size', metavar='INT',                         type=click.IntRange(min=1), required=True)
 @click.option('--gamma',        help='R1 regularization weight', metavar='FLOAT',               type=click.FloatRange(min=0), default=0.0, show_default=True)
 @click.option('--pl-weight',    help='Path length regularization weight', metavar='FLOAT',      type=click.FloatRange(min=0), default=0.0, show_default=True)
-@click.option('--bbox-cls-weight', help='Discriminator bottleneck bbox classification weight', metavar='FLOAT', type=click.FloatRange(min=0), default=1.0, show_default=True)
-@click.option('--bbox-rec-weight', help='Discriminator bottleneck bbox reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=10.0, show_default=True)
-@click.option('--text-rec-weight', help='Discriminator bottleneck text reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=0.01, show_default=True)
-@click.option('--text-len-rec-weight', help='Discriminator bottleneck text length reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=10.0, show_default=True)
-@click.option('--im-rec-weight', help='Discriminator bottleneck image reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=1.0, show_default=True)
-@click.option('--bbox-giou-weight', help='Generator bbox supervised reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=1.0, show_default=True)
+@click.option('--bbox-cls-weight', help='Discriminator/generator bottleneck bbox classification weight', metavar='FLOAT', type=click.FloatRange(min=0), default=50.0, show_default=True)
+@click.option('--bbox-rec-weight', help='Discriminator/generator bottleneck bbox reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=500.0, show_default=True)
+@click.option('--text-rec-weight', help='Discriminator/generator bottleneck text reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=0.1, show_default=True)
+@click.option('--text-len-rec-weight', help='Discriminator/generator bottleneck text length reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=2.0, show_default=True)
+@click.option('--im-rec-weight', help='Discriminator bottleneck image reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=0.5, show_default=True)
+@click.option('--bbox-giou-weight', help='Generator bbox supervised reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=4.0, show_default=True)
 @click.option('--overlapping-weight', help='Generator bbox overlapping penalty weight', metavar='FLOAT', type=click.FloatRange(min=0), default=7.0, show_default=True)
 @click.option('--alignment-weight', help='Generator bbox alignment penalty weight', metavar='FLOAT', type=click.FloatRange(min=0), default=17.0, show_default=True)
-@click.option('--z-rec-weight', help='Generator noise reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=10.0, show_default=True)
+@click.option('--z-rec-weight', help='Generator noise reconstruction weight', metavar='FLOAT', type=click.FloatRange(min=0), default=5.0, show_default=True)
 
 # Optional features.
 @click.option('--cond',         help='Train conditional model', metavar='BOOL',                 type=bool, default=False, show_default=True)
@@ -164,12 +163,12 @@ def parse_comma_separated_list(s):
 
 # Layoutganpp BERT text encoder/decoder hyperparameters (arg keys must be in lower case!!!).
 @click.option('--bert-f-dim',    help='BERT intermediate feature dimention', metavar='INT',     type=click.IntRange(min=1), default=768, show_default=True)
-@click.option('--bert-num-heads',help='BERT number of attention heads', metavar='INT',          type=click.IntRange(min=1), default=12, show_default=True)
+@click.option('--bert-num-heads',help='BERT number of attention heads', metavar='INT',          type=click.IntRange(min=1), default=4, show_default=True)
 @click.option('--bert-num-encoder-layers', help='BERT encoder number of attention layers', metavar='INT', type=click.IntRange(min=1), default=12, show_default=True)
-@click.option('--bert-num-decoder-layers', help='BERT decoder number of attention layers', metavar='INT', type=click.IntRange(min=1), default=12, show_default=True)
+@click.option('--bert-num-decoder-layers', help='BERT decoder number of attention layers', metavar='INT', type=click.IntRange(min=1), default=2, show_default=True)
 
 # Layoutganpp image encoder/decoder hyperparameters (arg keys must be in lower case!!!).
-@click.option('--background-size', help='Background image resolution for encoder/decoder training', metavar='INT', type=click.IntRange(min=1), default=1024, show_default=True)
+@click.option('--background-size', help='Background image resolution for encoder/decoder training', metavar='INT', type=click.IntRange(min=1), default=256, show_default=True)
 @click.option('--im-f-dim',     help='Image encoder/decoder intermediate feature dimention', metavar='INT', type=click.IntRange(min=1), default=512, show_default=True)
 
 # Misc settings.
@@ -177,35 +176,14 @@ def parse_comma_separated_list(s):
 @click.option('--metrics',      help='Quality metrics', metavar='[NAME|A,B,C|none]',            type=parse_comma_separated_list, default='fid50k_full', show_default=True)
 @click.option('--kimg',         help='Total training duration', metavar='KIMG',                 type=click.IntRange(min=1), default=25000, show_default=True)
 @click.option('--tick',         help='How often to print progress', metavar='KIMG',             type=click.IntRange(min=1), default=1, show_default=True)
-@click.option('--snap',         help='How often to save snapshots', metavar='TICKS',            type=click.IntRange(min=1), default=10, show_default=True)
+@click.option('--snap',         help='How often to save snapshots', metavar='TICKS',            type=click.IntRange(min=1), default=100, show_default=True)
 @click.option('--seed',         help='Random seed', metavar='INT',                              type=click.IntRange(min=0), default=0, show_default=True)
 @click.option('--fp32',         help='Disable mixed-precision', metavar='BOOL',                 type=bool, default=False, show_default=True)
 @click.option('--nobench',      help='Disable cuDNN benchmarking', metavar='BOOL',              type=bool, default=False, show_default=True)
-@click.option('--workers',      help='DataLoader worker processes', metavar='INT',              type=click.IntRange(min=1), default=3, show_default=True)
+@click.option('--workers',      help='DataLoader worker processes', metavar='INT',              type=click.IntRange(min=1), default=8, show_default=True)
 @click.option('-n','--dry-run', help='Print training options and exit',                         is_flag=True)
 
 def main(**kwargs):
-    """Train a GAN using the techniques described in the paper
-    "Alias-Free Generative Adversarial Networks".
-
-    Examples:
-
-    \b
-    # Train StyleGAN3-T for AFHQv2 using 8 GPUs.
-    python train.py --outdir=~/training-runs --cfg=stylegan3-t --data=~/datasets/afhqv2-512x512.zip \\
-        --gpus=8 --batch=32 --gamma=8.2 --mirror=1
-
-    \b
-    # Fine-tune StyleGAN3-R for MetFaces-U using 1 GPU, starting from the pre-trained FFHQ-U pickle.
-    python train.py --outdir=~/training-runs --cfg=stylegan3-r --data=~/datasets/metfacesu-1024x1024.zip \\
-        --gpus=8 --batch=32 --gamma=6.6 --mirror=1 --kimg=5000 --snap=5 \\
-        --resume=https://api.ngc.nvidia.com/v2/models/nvidia/research/stylegan3/versions/1/files/stylegan3-r-ffhqu-1024x1024.pkl
-
-    \b
-    # Train StyleGAN2 for FFHQ at 1024x1024 resolution using 8 GPUs.
-    python train.py --outdir=~/training-runs --cfg=stylegan2 --data=~/datasets/ffhq-1024x1024.zip \\
-        --gpus=8 --batch=32 --gamma=10 --mirror=1 --aug=noaug
-    """
 
     # Initialize config.
     opts = dnnlib.EasyDict(kwargs) # Command line arguments.
@@ -235,11 +213,6 @@ def main(**kwargs):
     c.num_gpus = opts.gpus
     c.batch_size = opts.batch
     c.batch_gpu = opts.batch_gpu or opts.batch // opts.gpus
-    #c.G_kwargs.channel_base = c.D_kwargs.channel_base = opts.cbase
-    #c.G_kwargs.channel_max = c.D_kwargs.channel_max = opts.cmax
-    #c.G_kwargs.mapping_kwargs.num_layers = (8 if opts.cfg == 'stylegan2' or opts.cfg == 'layoutganpp' else 2) if opts.map_depth is None else opts.map_depth
-    #c.D_kwargs.block_kwargs.freeze_layers = opts.freezed
-    #c.D_kwargs.epilogue_kwargs.mbstd_group_size = opts.mbstd_group
     c.loss_kwargs.r1_gamma = opts.gamma
     c.G_opt_kwargs.lr = opts.glr
     c.D_opt_kwargs.lr = opts.dlr
@@ -263,52 +236,34 @@ def main(**kwargs):
 
     # Base configuration.
     c.ema_kimg = c.batch_size * 10 / 32
-    if opts.cfg == 'layoutganpp':
-        c.G_kwargs.z_dim = opts.z_dim
-        c.G_kwargs.f_dim = opts.g_f_dim
-        c.G_kwargs.num_heads = opts.g_num_heads
-        c.G_kwargs.num_layers = opts.g_num_layers
-        c.D_kwargs.f_dim = opts.d_f_dim
-        c.D_kwargs.num_heads = opts.d_num_heads
-        c.D_kwargs.num_layers = opts.d_num_layers
-        c.G_kwargs.bert_f_dim = c.D_kwargs.bert_f_dim = opts.bert_f_dim
-        c.G_kwargs.bert_num_heads = c.D_kwargs.bert_num_heads = opts.bert_num_heads
-        c.G_kwargs.bert_num_encoder_layers = c.D_kwargs.bert_num_encoder_layers = opts.bert_num_encoder_layers
-        c.G_kwargs.bert_num_decoder_layers = c.D_kwargs.bert_num_decoder_layers = opts.bert_num_decoder_layers
-        c.G_kwargs.im_f_dim = c.D_kwargs.im_f_dim = opts.im_f_dim
-        c.loss_kwargs.pl_weight = opts.pl_weight # Enable path length regularization.
-        c.loss_kwargs.Dreal_bbox_cls_weight = opts.bbox_cls_weight
-        c.loss_kwargs.Ggen_bbox_cls_weight = opts.bbox_cls_weight
-        c.loss_kwargs.Dreal_bbox_rec_weight = opts.bbox_rec_weight
-        c.loss_kwargs.Ggen_bbox_rec_weight = opts.bbox_rec_weight / 5.0
-        c.loss_kwargs.Dreal_text_rec_weight = opts.text_rec_weight
-        c.loss_kwargs.Ggen_text_rec_weight = opts.text_rec_weight * 10.0
-        c.loss_kwargs.Dreal_text_len_rec_weight = opts.text_len_rec_weight
-        c.loss_kwargs.Ggen_text_len_rec_weight = opts.text_len_rec_weight / 2.0
-        c.loss_kwargs.Dreal_im_rec_weight = opts.im_rec_weight
-        c.loss_kwargs.Ggen_bbox_gIoU_weight = opts.bbox_giou_weight
-        c.loss_kwargs.Ggen_overlapping_weight = opts.overlapping_weight
-        c.loss_kwargs.Ggen_alignment_weight = opts.alignment_weight
-        c.loss_kwargs.Ggen_z_rec_weight = opts.z_rec_weight
-        c.G_reg_interval = 4 # Enable lazy regularization for G.
-        c.loss_kwargs.pl_no_weight_grad = True # Speed up path length regularization by skipping gradient computation wrt. conv2d weights.
-    elif opts.cfg == 'stylegan2':
-        c.G_kwargs.class_name = 'training.networks_stylegan2.Generator'
-        c.loss_kwargs.style_mixing_prob = 0.9 # Enable style mixing regularization.
-        c.loss_kwargs.pl_weight = opts.pl_weight # Enable path length regularization.
-        c.G_reg_interval = 4 # Enable lazy regularization for G.
-        c.G_kwargs.fused_modconv_default = 'inference_only' # Speed up training by using regular convolutions instead of grouped convolutions.
-        c.loss_kwargs.pl_no_weight_grad = True # Speed up path length regularization by skipping gradient computation wrt. conv2d weights.
-    else:
-        c.G_kwargs.class_name = 'training.networks_stylegan3.Generator'
-        c.G_kwargs.magnitude_ema_beta = 0.5 ** (c.batch_size / (20 * 1e3))
-        if opts.cfg == 'stylegan3-r':
-            c.G_kwargs.conv_kernel = 1 # Use 1x1 convolutions.
-            c.G_kwargs.channel_base *= 2 # Double the number of feature maps.
-            c.G_kwargs.channel_max *= 2
-            c.G_kwargs.use_radial_filters = True # Use radially symmetric downsampling filters.
-            c.loss_kwargs.blur_init_sigma = 10 # Blur the images seen by the discriminator.
-            c.loss_kwargs.blur_fade_kimg = c.batch_size * 200 / 32 # Fade out the blur during the first N kimg.
+    c.G_kwargs.z_dim = opts.z_dim
+    c.G_kwargs.f_dim = opts.g_f_dim
+    c.G_kwargs.num_heads = opts.g_num_heads
+    c.G_kwargs.num_layers = opts.g_num_layers
+    c.D_kwargs.f_dim = opts.d_f_dim
+    c.D_kwargs.num_heads = opts.d_num_heads
+    c.D_kwargs.num_layers = opts.d_num_layers
+    c.G_kwargs.bert_f_dim = c.D_kwargs.bert_f_dim = opts.bert_f_dim
+    c.G_kwargs.bert_num_heads = c.D_kwargs.bert_num_heads = opts.bert_num_heads
+    c.G_kwargs.bert_num_encoder_layers = c.D_kwargs.bert_num_encoder_layers = opts.bert_num_encoder_layers
+    c.G_kwargs.bert_num_decoder_layers = c.D_kwargs.bert_num_decoder_layers = opts.bert_num_decoder_layers
+    c.G_kwargs.im_f_dim = c.D_kwargs.im_f_dim = opts.im_f_dim
+    c.loss_kwargs.pl_weight = opts.pl_weight # Enable path length regularization.
+    c.loss_kwargs.Dreal_bbox_cls_weight = opts.bbox_cls_weight
+    c.loss_kwargs.Ggen_bbox_cls_weight = opts.bbox_cls_weight
+    c.loss_kwargs.Dreal_bbox_rec_weight = opts.bbox_rec_weight
+    c.loss_kwargs.Ggen_bbox_rec_weight = opts.bbox_rec_weight / 5.0
+    c.loss_kwargs.Dreal_text_rec_weight = opts.text_rec_weight
+    c.loss_kwargs.Ggen_text_rec_weight = opts.text_rec_weight * 10.0
+    c.loss_kwargs.Dreal_text_len_rec_weight = opts.text_len_rec_weight
+    c.loss_kwargs.Ggen_text_len_rec_weight = opts.text_len_rec_weight / 2.0
+    c.loss_kwargs.Dreal_im_rec_weight = opts.im_rec_weight
+    c.loss_kwargs.Ggen_bbox_gIoU_weight = opts.bbox_giou_weight
+    c.loss_kwargs.Ggen_overlapping_weight = opts.overlapping_weight
+    c.loss_kwargs.Ggen_alignment_weight = opts.alignment_weight
+    c.loss_kwargs.Ggen_z_rec_weight = opts.z_rec_weight
+    c.G_reg_interval = 4 # Enable lazy regularization for G.
+    c.loss_kwargs.pl_no_weight_grad = True # Speed up path length regularization by skipping gradient computation wrt. conv2d weights.
 
     # Augmentation.
     if opts.aug != 'noaug':
@@ -334,7 +289,7 @@ def main(**kwargs):
         c.cudnn_benchmark = False
 
     # Description string.
-    desc = f'{opts.cfg:s}-{dataset_name:s}-gpus{c.num_gpus:d}-batch{c.batch_size:d}-pl{c.loss_kwargs.pl_weight:.3f}-gamma{c.loss_kwargs.r1_gamma:.3f}-overlapping{c.loss_kwargs.Ggen_overlapping_weight:.0f}-alignment{c.loss_kwargs.Ggen_alignment_weight:.0f}'
+    desc = f'layoutganpp-{dataset_name:s}-gpus{c.num_gpus:d}-batch{c.batch_size:d}-pl{c.loss_kwargs.pl_weight:.3f}-gamma{c.loss_kwargs.r1_gamma:.3f}-overlapping{c.loss_kwargs.Ggen_overlapping_weight:.0f}-alignment{c.loss_kwargs.Ggen_alignment_weight:.0f}'
     if opts.desc is not None:
         desc += f'-{opts.desc}'
 
