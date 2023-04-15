@@ -33,8 +33,13 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 	```
 
 ## Data preprocessing
-[Our ad banner dataset](https://storage.cloud.google.com/sfr-layoutdetr-data-research/ads_banner_collection_manual_3x_mask.zip) (9.9GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with retailer brands as keywords. Download our prepared dataset and unzip to `data/ads_banner_collection_manual_3x_mask` which contains two subdirectories:
-- `manual_json_png_gt_label` subdirectory contains a set of `*.png` files representing well-designed images with foreground elements superimposed on the background. It also correspondingly contains a set of `*.json` files with the same file names as of `*.png`, representing the layout ground truth of foreground elements of each well-designed image. Each `*.json` file contains a set of bounding box annotations in the form of `[cy, cx, height, width]`, their label annotations, and their text contents if any.
+[Our ad banner dataset](https://storage.cloud.google.com/sfr-layoutdetr-data-research/ads_banner_collection_manual_3x_mask.zip) (9.9GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with a variety of retailer brands as keywords. Download our prepared dataset and unzip to `data/ads_banner_collection_manual_3x_mask` which contains two subdirectories:
+- `manual_json_png_gt_label` subdirectory contains:
+	- `*.png` files representing well-designed images with foreground elements superimposed on the background.
+	- Corresponding `*.json` files with the same file names as of `*.png`, representing the layout ground truth of foreground elements of each well-designed image. Each `*.json` file contains:
+		- `xyxy_word_fit` key: A set of bounding box annotations in the form of `[cy, cx, height, width]`, detected by our [Salesforce Einstein OCR](https://help.salesforce.com/s/articleView?id=release-notes.rn_einstein_vision_ocr_pdf_support.htm&release=230&type=5).
+		- `str` key: Their text contents if any, also recognized by our [Salesforce Einstein OCR](https://help.salesforce.com/s/articleView?id=release-notes.rn_einstein_vision_ocr_pdf_support.htm&release=230&type=5).
+		- 'label' key: Their element categories annotated manually through [Amazon Mechanical Turk](https://www.mturk.com/). The interesting categories include {`header`, `pre-header`, `post-header`, `body text`, `disclaimer / footnote`, `button`, `callout`, `logo`}.
 - `manual_LaMa_3x_stringOnly_inpainted_background_images` subdirectory correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images. The subregions that were superimposed by foreground elements have been inpainted by the [LaMa technique](https://github.com/saic-mdal/lama). There are 2x extra random subregions also inpainted, which aim at avoiding generator being overfitted to inpainted subregions if we inpaint only ground truth layouts. The augmented inpainting subregions serve as false postive which are inpainted but are not ground truth layouts.
 - To preprocess the dataset that are efficient for training, run
 	```
@@ -107,3 +112,4 @@ where
 ## Acknowledgement
 - We thank Abigail Kutruff, [Brian Brechbuhl](https://www.linkedin.com/in/brianbrechbuhl), [Elham Etemad](https://ca.linkedin.com/in/elhametemad), and [Amrutha Krishnan](https://www.linkedin.com/in/amruthakrishnan) from Salesforce for constructive advice.
 - We express gratitudes to the [StyleGAN3](https://github.com/NVlabs/stylegan2), [LayoutGAN++](https://github.com/ktrk115/const_layout), [DETR](https://github.com/facebookresearch/detr), [Up-DETR](https://github.com/dddzg/up-detr), and [BLIP](https://github.com/salesforce/BLIP), as our code was modified from their repositories.
+- We also feel grateful for the data contribution of [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/).
