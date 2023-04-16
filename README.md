@@ -63,7 +63,7 @@ python train.py --gpus=8 --batch=16 \
 --metrics=layout_fid50k_train,layout_fid50k_val,fid50k_train,fid50k_val,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_train,overlap50k_alignment50k_layoutwise_iou50k_layoutwise_docsim50k_val
 ```
 where
-- `--batch` indicates the total batch size on all the GPUs.
+- `--batch` indicates the **total batch size** on all the GPUs.
 - `--data` indicates the preprocessed training data .zip file path.
 - `--outdir` indicates the output direcotry path of model checkpoints, result snapshots, config record file, log file, etc.
 - `--metrics` indicates the evaluation metrics measured for each model checkpoint during training, which can include layout FID, image FID, overlap penalty, misalignment penalty, layout-wise IoU, and layout-wise DocSim, etc. See more metric options in `metrics/metric_main.py`.
@@ -85,7 +85,7 @@ where
 ## Layout generation in the wild
 ```
 python generate.py \
---network=checkpoints/layoutdetr_ad_banner.pkl \
+--ckpt=checkpoints/layoutdetr_ad_banner.pkl \
 --bg='examples/Lumber 2 [header]EVERYTHING 10% OFF[body text]Friends & Family Savings Event[button]SHOP NOW[disclaimer]CODE FRIEND10.jpg' \
 --bg-preprocessing=256 \
 --strings='EVERYTHING 10% OFF|Friends & Family Savings Event|SHOP NOW|CODE FRIEND10' \
@@ -94,7 +94,7 @@ python generate.py \
 --out-postprocessing=horizontal_center_aligned
 ```
 where
-- `--network` indicates the well-trained generator .pkl file path.
+- `--ckpt` indicates the well-trained generator .pkl file path.
 - `--bg` indicates the provided background image file path.
 - `--bg-preprocessing` indicates the preprocessing operation to the background image. The default is `none`, meaning no preprocessing.
 - `--strings` indicates the ads text strings, the bboxes of which will be generated on top of the background image. Multiple (<10) strings are separated by `|`.

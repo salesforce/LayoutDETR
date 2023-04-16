@@ -201,7 +201,7 @@ font_type = ['Helvetica', 'Verdana', 'Times New Roman', 'Georgia', 'Aria', 'Aria
 #----------------------------------------------------------------------------
 
 @click.command()
-@click.option('--network', 'network_pkl', help='Network pickle filename', required=True)
+@click.option('--ckpt', 'network_pkl', help='Network pickle filename', required=True)
 @click.option('--bg', type=str, help='Path of a background image', required=True)
 @click.option('--bg-preprocessing', 'bg_preprocessing', help='Postprocess the background image', type=click.Choice(['256', '128', 'blur', 'jpeg', 'rec', '3x_mask', 'edge', 'none']), default='none', show_default=True)
 @click.option('--strings', type=str, help="Strings to be printed on the banner. Multiple strings are separated by '|'", required=True)
