@@ -116,4 +116,4 @@ where
 ## Acknowledgement
 - We thank Abigail Kutruff, [Brian Brechbuhl](https://www.linkedin.com/in/brianbrechbuhl), [Elham Etemad](https://ca.linkedin.com/in/elhametemad), and [Amrutha Krishnan](https://www.linkedin.com/in/amruthakrishnan) from Salesforce for constructive advice.
 - We express gratitudes to the [StyleGAN3](https://github.com/NVlabs/stylegan2), [LayoutGAN++](https://github.com/ktrk115/const_layout), [DETR](https://github.com/facebookresearch/detr), [Up-DETR](https://github.com/dddzg/up-detr), and [BLIP](https://github.com/salesforce/BLIP), as our code was modified from their repositories.
-- We are also grateful for the data contribution of [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/) and technical support of [LaMa](https://github.com/saic-mdal/lama).
+- We also acknowledge the data contribution of [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/) and technical support of [LaMa](https://github.com/saic-mdal/lama).
