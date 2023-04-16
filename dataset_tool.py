@@ -207,9 +207,9 @@ def open_ads_banner_collection_manual_gt(source_dir, inpaint_aug, max_samples: O
                 patch_masks.append(patch_mask)
             # background image
             if inpaint_aug:
-                background_orig_path = str(fname).replace('manual_json_png_gt_label', 'manual_LaMa_3x_stringOnly_inpainted_background_images').replace('.json', '_inpainted.png')
+                background_orig_path = str(fname).replace('png_json_gt', '3x_inpainted_background_png').replace('.json', '_inpainted.png')
             else:
-                background_orig_path = str(fname).replace('manual_json_png_gt_label', 'manual_LaMa_stringOnly_inpainted_background_images').replace('.json', '_inpainted.png')
+                background_orig_path = str(fname).replace('png_json_gt', '1x_inpainted_background_png').replace('.json', '_inpainted.png')
             assert os.path.isfile(background_orig_path)
             background_orig = PIL.Image.open(background_orig_path)
             background_orig = background_orig.resize((1024, 1024), resample=PIL.Image.BILINEAR)
@@ -279,7 +279,7 @@ def open_dest(dest: str) -> Tuple[str, Callable[[str, Union[bytes, str]], None],
 @click.pass_context
 @click.option('--source', help='Directory or archive name for input dataset', required=True, metavar='PATH')
 @click.option('--dest', help='Output directory or archive name for output dataset', required=True, metavar='PATH')
-@click.option('--inpaint-aug', help='Extra inpainting for random subregions on background images', type=str2bool, const=True, default=False)
+@click.option('--inpaint-aug', help='Extra inpainting for random subregions on background images', type=str2bool, is_flag=True, default=False)
 @click.option('--max-samples', help='Output only up to `max-samples` samples', type=int, default=None)
 def convert_dataset(
     ctx: click.Context,

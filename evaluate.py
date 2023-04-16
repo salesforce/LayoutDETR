@@ -52,20 +52,13 @@ def launch_training(c, desc, outdir, dry_run):
 
     # Print options.
     print()
-    print('Training options:')
+    print('Evaluation options:')
     print(json.dumps(c, indent=2))
     print()
     print(f'Output directory:       {c.run_dir}')
     print(f'Number of GPUs:         {c.num_gpus}')
     print(f'Batch size:             {c.batch_size} images')
-    print(f'Training duration:      {c.total_kimg} kimg')
-    print(f'Training dataset path:  {c.training_set_kwargs.path}')
-    print(f'Training dataset size:  {c.training_set_kwargs.max_size} images')
-    #print(f'Training dataset height:{c.training_set_kwargs.height}')
-    #print(f'Training dataset width: {c.training_set_kwargs.width}')
-    print(f'Training dataset labels:{c.training_set_kwargs.use_labels}')
-    #print(f'Training dataset x-flips:     {c.training_set_kwargs.xflip}')
-    print(f'Validation dataset path:{c.validation_set_kwargs.path}')
+    print(f'Evaluation dataset path:{c.validation_set_kwargs.path}')
     print()
 
     # Dry run?
@@ -137,8 +130,7 @@ def parse_comma_separated_list(s):
 @click.option('--cond',         help='Train conditional model', metavar='BOOL',                 type=bool, default=False, show_default=True)
 @click.option('--mirror',       help='Enable dataset x-flips', metavar='BOOL',                  type=bool, default=False, show_default=True)
 @click.option('--aug',          help='Augmentation mode',                                       type=click.Choice(['noaug', 'ada', 'fixed']), default='noaug', show_default=True)
-@click.option('--resume',       help='Resume from given network pickle', metavar='[PATH|URL]',  type=str)
-@click.option('--resume-kimg',  help='Resume kimg index from given network pickle', metavar='INT', type=click.IntRange(min=0), default=25000, show_default=True)
+@click.option('--ckpt',         help='Checkpoint from given network pickle', metavar='[PATH|URL]',  type=str)
 @click.option('--freezed',      help='Freeze first layers of D', metavar='INT',                 type=click.IntRange(min=0), default=0, show_default=True)
 
 # Misc hyperparameters.
@@ -274,9 +266,9 @@ def main(**kwargs):
             c.augment_p = opts.p
 
     # Resume.
-    if opts.resume is not None:
-        c.resume_pkl = opts.resume
-        c.resume_kimg = opts.resume_kimg
+    if opts.ckpt is not None:
+        c.resume_pkl = opts.ckpt
+        c.resume_kimg = opts.kimg
         c.ada_kimg = 100 # Make ADA react faster at the beginning.
         c.ema_rampup = None # Disable EMA rampup.
         c.loss_kwargs.blur_init_sigma = 0 # Disable blur rampup.
