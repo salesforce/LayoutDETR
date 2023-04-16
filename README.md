@@ -34,14 +34,14 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 
 ## Data preprocessing
 [Our ad banner dataset](https://storage.cloud.google.com/sfr-layoutdetr-data-research/ads_banner_collection_manual_3x_mask.zip) (9.9GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with a variety of retailer brands as keywords. Download our prepared dataset and unzip to `data/ads_banner_dataset` which contains two subdirectories:
-- `png_json_gt` subdirectory contains:
+- `png_json_gt/` subdirectory contains:
 	- `*.png` files representing well-designed images with foreground elements superimposed on the background.
 	- Corresponding `*.json` files with the same file names as of `*.png`, representing the layout ground truth of foreground elements of each well-designed image. Each `*.json` file contains:
 		- `xyxy_word_fit` key: A set of bounding box annotations in the form of `[cy, cx, height, width]`, detected by our [Salesforce Einstein OCR](https://help.salesforce.com/s/articleView?id=release-notes.rn_einstein_vision_ocr_pdf_support.htm&release=230&type=5).
 		- `str` key: Their text contents if any, also recognized by our [Salesforce Einstein OCR](https://help.salesforce.com/s/articleView?id=release-notes.rn_einstein_vision_ocr_pdf_support.htm&release=230&type=5).
 		- `label` key: Their element categories annotated manually through [Amazon Mechanical Turk](https://www.mturk.com/). The interesting categories include {`header`, `pre-header`, `post-header`, `body text`, `disclaimer / footnote`, `button`, `callout`, `logo`}.
-- `1x_inpainted_background_png` subdirectory correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images. The subregions that were superimposed by foreground elements have been inpainted by the [LaMa technique](https://github.com/saic-mdal/lama). These background images should be used for inference or evaluation only, **not for training**.
-- `3x_inpainted_background_png` subdirectory also correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images. There are 2x extra random subregions also inpainted, which aim at avoiding generator being overfitted to inpainted subregions if we inpaint only ground truth layouts. The augmented inpainting subregions serve as false postive which are inpainted but are not ground truth layouts. We use these background images for training.
+- `1x_inpainted_background_png/` subdirectory correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images. The subregions that were superimposed by foreground elements have been inpainted by the [LaMa technique](https://github.com/saic-mdal/lama). These background images should be used for inference or evaluation only, **not for training**.
+- `3x_inpainted_background_png/` subdirectory also correspondingly contains a set of `*.png` files representing the background-only images of the well-designed images. There are 2x extra random subregions also inpainted, which aim at avoiding generator being overfitted to inpainted subregions if we inpaint only ground truth layouts. The augmented inpainting subregions serve as false postive which are inpainted but are not ground truth layouts. We use these background images for training.
 
 To preprocess the dataset that are efficient for training, run
 ```
@@ -53,7 +53,7 @@ python dataset_tool.py \
 where
 - `--source` indicates the source data direcotry path where you downloaded the raw dataset.
 - `--dest` indicates the preprocessed data direcotry path containing two files: `train.zip` and `val.zip` which are 9:1 splitted from the source data.
-- `inpaint-aug` indicates using `3x_inpainted_background_png` with extra inpainting on background instead of using `1x_inpainted_background_png`.
+- `inpaint-aug` indicates using `3x_inpainted_background_png/` with extra inpainting on background instead of using `1x_inpainted_background_png/`.
 
 ## Training
 ```
