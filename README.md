@@ -94,7 +94,7 @@ python generate.py \
 --out-postprocessing=horizontal_center_aligned
 ```
 where
-- `--ckpt` indicates the well-trained generator .pkl file path.
+- `--ckpt` indicates the path of the well-trained generator .pkl file.
 - `--bg` indicates the provided background image file path.
 - `--bg-preprocessing` indicates the preprocessing operation to the background image. The default is `none`, meaning no preprocessing.
 - `--strings` indicates the ads text strings, the bboxes of which will be generated on top of the background image. Multiple (<10) strings are separated by `|`.
