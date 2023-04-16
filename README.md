@@ -33,7 +33,7 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 	```
 
 ## Data preprocessing
-[Our ad banner dataset](https://storage.cloud.google.com/sfr-layoutdetr-data-research/ads_banner_dataset.zip) (9.9GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with a variety of retailer brands as keywords. Download our dataset and unzip to `data/` which contains three subdirectories:
+[Our ad banner dataset](https://storage.cloud.google.com/sfr-layoutdetr-data-research/ads_banner_dataset.zip) (14.7GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with a variety of retailer brands as keywords. Download our dataset and unzip to `data/` which contains three subdirectories:
 - `png_json_gt/` subdirectory contains:
 	- `*.png` files representing well-designed images with foreground elements superimposed on the background.
 	- Corresponding `*.json` files with the same file names as of `*.png`, representing the layout ground truth of foreground elements of each well-designed image. Each `*.json` file contains:
