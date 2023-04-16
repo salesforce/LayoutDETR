@@ -33,7 +33,7 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 	```
 
 ## Data preprocessing
-[Our ad banner dataset](https://storage.cloud.google.com/sfr-layoutdetr-data-research/ads_banner_collection_manual_3x_mask.zip) (9.9GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with a variety of retailer brands as keywords. Download our prepared dataset and unzip to `data/ads_banner_dataset` which contains two subdirectories:
+[Our ad banner dataset](https://storage.cloud.google.com/sfr-layoutdetr-data-research/ads_banner_dataset.zip) (9.9GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with a variety of retailer brands as keywords. Download our dataset and unzip to `data/` which contains three subdirectories:
 - `png_json_gt/` subdirectory contains:
 	- `*.png` files representing well-designed images with foreground elements superimposed on the background.
 	- Corresponding `*.json` files with the same file names as of `*.png`, representing the layout ground truth of foreground elements of each well-designed image. Each `*.json` file contains:
@@ -53,7 +53,7 @@ python dataset_tool.py \
 where
 - `--source` indicates the source data direcotry path where you downloaded the raw dataset.
 - `--dest` indicates the preprocessed data direcotry path containing two files: `train.zip` and `val.zip` which are 9:1 splitted from the source data.
-- `inpaint-aug` indicates using `3x_inpainted_background_png/` with extra inpainting on background instead of using `1x_inpainted_background_png/`.
+- `inpaint-aug` indicates using `3x_inpainted_background_png/` with extra inpainting on background instead of using `1x_inpainted_background_png/`. Use this argument when preprocessing training data.
 
 ## Training
 ```
