@@ -70,7 +70,7 @@ where
 - See the definitions and default settings of the other arguments in `train.py`.
 
 ## Evaluation
-Download the well-trained LayoutDETR model on our ad banner dataset from [here](https://storage.cloud.google.com/sfr-layoutdetr-data-research/layoutdetr_ad_banner.pkl) (2.7GB) to `checkpoints/`.
+Download the **well-trained LayoutDETR model** on our ad banner dataset from [here](https://storage.cloud.google.com/sfr-layoutdetr-data-research/layoutdetr_ad_banner.pkl) (2.7GB) to `checkpoints/`.
 ```
 python evaluate.py --gpus=8 --batch=16 \
 --data=data/ads_banner_dataset/zip_1x_inpainted/val.zip \
