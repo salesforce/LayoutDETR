@@ -1,11 +1,14 @@
 '''
- * Copyright (c) 2022, salesforce.com, inc.
+ * Copyright (c) 2023 Salesforce, Inc.
  * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
- * By Junnan Li
- * Based on huggingface code base
- * https://github.com/huggingface/transformers/blob/v4.15.0/src/transformers/models/bert
+ * SPDX-License-Identifier: Apache License 2.0
+ * For full license text, see LICENSE.txt file in the repo root or http://www.apache.org/licenses/
+ * By Ning Yu
+
+ * Redistributed from BLIP repo: https://github.com/salesforce/BLIP
+ * Copyright (c) 2022 Salesforce, Inc.
+
+ * Modified from HuggingFace code base of transformers: https://github.com/huggingface/transformers/blob/v4.15.0/src/transformers/models/bert
 '''
 
 import math

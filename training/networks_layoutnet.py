@@ -1,3 +1,13 @@
+'''
+ * Copyright (c) 2023 Salesforce, Inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: Apache License 2.0
+ * For full license text, see LICENSE.txt file in the repo root or http://www.apache.org/licenses/
+ * By Ning Yu
+
+ * Modified from LayoutGAN++ repo: https://github.com/ktrk115/const_layout
+'''
+
 import torch
 import torch.nn as nn
 

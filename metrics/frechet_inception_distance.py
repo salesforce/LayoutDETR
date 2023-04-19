@@ -1,15 +1,15 @@
-# Copyright (c) 2021, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
-#
-# NVIDIA CORPORATION and its licensors retain all intellectual property
-# and proprietary rights in and to this software, related documentation
-# and any modifications thereto.  Any use, reproduction, disclosure or
-# distribution of this software and related documentation without an express
-# license agreement from NVIDIA CORPORATION is strictly prohibited.
+'''
+ * Copyright (c) 2023 Salesforce, Inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: Apache License 2.0
+ * For full license text, see LICENSE.txt file in the repo root or http://www.apache.org/licenses/
+ * By Ning Yu
 
-"""Frechet Inception Distance (FID) from the paper
-"GANs trained by a two time-scale update rule converge to a local Nash
-equilibrium". Matches the original implementation by Heusel et al. at
-https://github.com/bioinf-jku/TTUR/blob/master/fid.py"""
+ * Redistributed from StyleGAN3 repo: https://github.com/NVlabs/stylegan3
+ * Copyright (c) 2021, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+
+ * Reimplemented from "GANs trained by a two time-scale update rule converge to a local Nash equilibrium": https://github.com/bioinf-jku/TTUR/blob/master/fid.py
+'''
 
 import numpy as np
 import scipy.linalg

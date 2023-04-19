@@ -1,3 +1,14 @@
+'''
+ * Copyright (c) 2023 Salesforce, Inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: Apache License 2.0
+ * For full license text, see LICENSE.txt file in the repo root or http://www.apache.org/licenses/
+ * By Ning Yu
+
+ * Modified from StyleGAN3 repo: https://github.com/NVlabs/stylegan3
+ * Copyright (c) 2021, NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+'''
+
 import os
 import time
 import copy
