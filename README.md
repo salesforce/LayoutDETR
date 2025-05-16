@@ -33,7 +33,8 @@ Graphic layout designs play an essential role in visual communication. Yet handc
 	```
 
 ## Data preprocessing
-[Our ad banner dataset](https://storage.googleapis.com/sfr-layoutdetr-data-research/sfr-layoutdetr/ads_banner_dataset.zip) (14.7GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with a variety of retailer brands as keywords. Download our dataset and unzip to `data/` which contains three subdirectories:
+[Our ad banner dataset](https://drive.google.com/file/d/1T09t4dX7zQ7J-8KxtJv1RkyjRNdilD1m/view?usp=sharing
+) (14.7GB, 7,672 samples). Part of the source images are filtered from [Pitt Image Ads Dataset](https://people.cs.pitt.edu/~kovashka/ads/readme_images.txt) and the others are crawled from Google image search engine with a variety of retailer brands as keywords. Download our dataset and unzip to `data/` which contains three subdirectories:
 - `png_json_gt/` subdirectory contains:
 	- `*.png` files representing well-designed images with foreground elements superimposed on the background.
 	- Corresponding `*.json` files with the same file names as of `*.png`, representing the layout ground truth of foreground elements of each well-designed image. Each `*.json` file contains:
@@ -70,7 +71,7 @@ where
 - See the definitions and default settings of the other arguments in `train.py`.
 
 ## Evaluation
-Download the **well-trained LayoutDETR model** on our ad banner dataset from [here](https://storage.googleapis.com/sfr-layoutdetr-data-research/sfr-layoutdetr/layoutdetr_ad_banner.pkl) (2.7GB) to `checkpoints/`.
+Download the **well-trained LayoutDETR model** on our ad banner dataset from [here](https://drive.google.com/file/d/1iaKATX2Id9JnqDunDytVIK5l9HO0a0w-/view?usp=drive_link) (2.7GB) to `checkpoints/`.
 ```
 python evaluate.py --gpus=8 --batch=16 \
 --data=data/ads_banner_dataset/zip_1x_inpainted/val.zip \
